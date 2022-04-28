@@ -13,7 +13,7 @@ function getAssignments(req, res){
 }
 */
 function getAssignments(req, res) {
-    var aggregateQuery = Assignment.aggregate();
+    const aggregateQuery = Assignment.aggregate();
     Assignment.aggregatePaginate(aggregateQuery,
       {
         page: parseInt(req.query.page) || 1,
