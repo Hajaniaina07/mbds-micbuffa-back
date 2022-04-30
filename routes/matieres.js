@@ -4,7 +4,7 @@ function getMatieres(req, res) {
     Matiere.find({}, function (error, matieres) {
         if (error) return res.status(500).send({message: 'Erreur sur le serveur.'});
         res.status(200).send(matieres);
-    });
+    }).sort({nomMatiere: 1});
 }
 
 async function addMatiere(req, res) {

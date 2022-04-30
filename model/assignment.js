@@ -6,6 +6,10 @@ let AssignmentSchema = Schema({
     id: Number,
     dateDeRendu: Date,
     nom: String,
+    auteur: Object,
+    matiere: Object,
+    note: {type: Number, required: false, min: 0, max: 20},
+    remarque: String,
     rendu: Boolean
 });
 

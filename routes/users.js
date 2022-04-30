@@ -33,7 +33,6 @@ function login(req, res) {
     User.findOne({username: req.body.username}, function (err, user) {
         if (err) return res.status(500).send({message: 'Erreur sur le serveur.'});
         if (!user) return res.status(404).send({message: 'Aucun utilisateur trouvé.'});
-        console.log(user);
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!passwordIsValid) return res.status(401).send({message: 'Mot de passe invalide', auth: false, token: null});
         const token = jwt.sign({id: user._id}, config.secret, {
@@ -47,7 +46,7 @@ function getUsers(req, res) {
     User.find({}, function (error, users) {
         if (error) return res.status(500).send({message: 'Erreur sur le serveur.'});
         res.status(200).send({users: users});
-    });
+    }).sort({name: 1});
 }
 
 function getUsersByProfile(req, res) {
