@@ -13,24 +13,19 @@ function me(req, res) {
 }
 
 // Ajout d'un utilisateur (POST)
-function addUser(req, res) {
+async function addUser(req, res) {
     let user = new User();
     user.id = req.body.id;
     user.username = req.body.username;
     user.name = req.body.name;
     user.profile = req.body.profile;
-
+    user.image = req.body.image;
     user.password = bcrypt.hashSync(req.body.password, 8);
-
-
-    console.log("POST register reçu :");
-    console.log(user)
-
     user.save((err) => {
         if (err) {
-            res.send('cant post register ', err);
+            res.send({message: "Une erreur s'est produite lors de l'ajout"}, err);
         }
-        res.json({message: `${user.username} saved depuis la version HEROKU!`})
+        res.status(201).send({message: 'Utilisateur créer'});
     })
 }
 
@@ -38,15 +33,30 @@ function login(req, res) {
     User.findOne({username: req.body.username}, function (err, user) {
         if (err) return res.status(500).send({message: 'Erreur sur le serveur.'});
         if (!user) return res.status(404).send({message: 'Aucun utilisateur trouvé.'});
+        console.log(user);
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!passwordIsValid) return res.status(401).send({message: 'Mot de passe invalide', auth: false, token: null});
         const token = jwt.sign({id: user._id}, config.secret, {
             expiresIn: 86400 // expires in 24 hours
         });
-        const userValide = {id: user.id, username: user.username, name: user.name, profile: user.profile};
-        res.status(200).send({auth: true, user: userValide, token: token});
+        res.status(200).send({auth: true, user: user, token: token});
+    });
+}
+
+function getUsers(req, res) {
+    User.find({}, function (error, users) {
+        if (error) return res.status(500).send({message: 'Erreur sur le serveur.'});
+        res.status(200).send({users: users});
+    });
+}
+
+function getUsersByProfile(req, res) {
+    const profile = req.params.profile;
+    User.find({profile: profile}, function (error, users) {
+        if (error) return res.status(500).send({message: 'Erreur sur le serveur.'});
+        res.status(200).send({users: users});
     });
 }
 
 
-module.exports = {me, login, addUser};
+module.exports = {me, login, addUser, getUsers, getUsersByProfile};

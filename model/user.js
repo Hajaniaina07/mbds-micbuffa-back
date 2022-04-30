@@ -7,7 +7,8 @@ let UserSchema = Schema({
     username: String,
     password: String,
     name: String,
-    profile: String
+    profile: String,
+    image: String,
 });
 
 // Pour ajouter la pagination

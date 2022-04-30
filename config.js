@@ -1,3 +1,4 @@
 module.exports = {
-    'secret': 'superSecret'
+    'secret': 'superSecret',
+    duration: 86400,
 };
